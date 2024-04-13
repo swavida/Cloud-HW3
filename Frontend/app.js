@@ -43,12 +43,11 @@ function uploadPhoto() {
     reader.readAsArrayBuffer(photoFile);
     reader.onload = function () {
         const arrayBuffer = reader.result;
+        //const base64Data = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
         const apigClient = apigClientFactory.newClient();
         const additionalParams = {
             headers: headers
         };
-
-        
 
         // Example assumes your API client expects an object key to be part of the path
         apigClient.uploadObjectPut({object: photoFile.name, 'x-amz-meta-customLabels': customLabels}, arrayBuffer, additionalParams)
