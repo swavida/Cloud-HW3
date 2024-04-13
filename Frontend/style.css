@@ -1,0 +1,73 @@
+/* General body styles */
+body {
+    font-family: Gotham SSm\ 4r, Gotham SSm A, Gotham SSm B, Helvetica;
+    background-color: #f3e8ff; /* Light lavender background */
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Header styles */
+h1, h2 {
+    color: #57068c; /* Darker purple for headers */
+}
+
+/* Input and button styles */
+input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #7a5da9; /* Purple */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #6d429c; /* Slightly darker purple on hover */
+}
+
+/* Container for search results and uploads */
+div {
+    background-color: #fff; /* White background for containers */
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Styles for images in search results */
+img {
+    margin-right: 10px;
+    border-radius: 4px;
+    width: 100px; /* Fixed width for consistency */
+    height: auto;
+}
+
+/* Styling for photo upload section */
+#customLabels {
+    margin-top: 5px;
+    width: calc(100% - 16px); /* Adjust width to fit with padding */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    input[type="text"], input[type="file"], button {
+        width: 100%;
+    }
+}
