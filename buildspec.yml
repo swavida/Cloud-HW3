@@ -1,0 +1,56 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+      nodejs: 14
+    commands:
+      # - echo "Installing virtualenv for Python and preparing Node.js environment..."
+      # # python -m pip install --upgrade pip
+      # #pip install virtualenv
+      # - echo "Node.js version:"
+      # - node --version
+      # - echo "NPM version:"
+      # - npm --version
+
+  pre_build:
+    commands:
+      # - echo "Setting up virtual environment for Python function LF1..."
+      # - virtualenv venv-python
+      # - echo "Preparing Node.js function directory LF2..."
+      # - mkdir lf2
+
+  build:
+    commands:
+      - echo "Building and packaging the Python Lambda function LF1..."
+      # - source venv-python/bin/activate
+      # - pip install boto3 opensearchpy requests_aws4auth
+      # - deactivate
+      #- cd venv-python/lib/python3.12/site-packages
+      - cd LF1
+      - zip -r9 ${CODEBUILD_SRC_DIR}/lf1.zip lambda_function.py
+      # - cd $CODEBUILD_SRC_DIR
+      # - zip -g lf1.zip lambda_function_1.py  # Adjust the script name as needed
+
+      - echo "Building and packaging the Node.js Lambda function LF2..."
+      - cd ..
+      - cd LF2  # Assuming this is where your Node.js code is located
+      # - npm install  # ensure your package.json is set up correctly
+      - zip -r9 ${CODEBUILD_SRC_DIR}/lf2.zip index.mjs
+      # - cd $CODEBUILD_SRC_DIR
+      # - zip -g lf2.zip index.js  # Adjust the script name as needed
+
+  post_build:
+    commands:
+      - cd ..
+      - echo "Updating LF1 lambda function"
+      - aws lambda update-function-code --function-name LF1 --zip-file fileb://lf1.zip
+      - echo "Updating LF2 lambda function"
+      - aws lambda update-function-code --function-name LF2 --zip-file fileb://lf2.zip
+      - echo "post_build step"
+
+artifacts:
+  files:
+    - lf1.zip
+    - lf2.zip
