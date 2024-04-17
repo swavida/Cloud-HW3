@@ -59,7 +59,8 @@ apiGateway.core.simpleHttpClientFactory.newClient = function (config) {
             headers['Accept'] = config.defaultAcceptType;
         }
 
-        var body = apiGateway.core.utils.copy(request.body);
+        //var body = apiGateway.core.utils.copy(request.body);
+        var body = request.body;
         if (body === undefined) {
             body = '';
         }
@@ -69,12 +70,14 @@ apiGateway.core.simpleHttpClientFactory.newClient = function (config) {
         if (queryString != '') {
             url += '?' + queryString;
         }
+
         var simpleHttpRequest = {
             method: verb,
             url: url,
             headers: headers,
             data: body
         };
+  
         return axios(simpleHttpRequest);
     };
     return simpleHttpClient;
