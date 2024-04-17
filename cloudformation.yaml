@@ -1,0 +1,565 @@
+Resources:
+  Bucket14C3977AF:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+      VersioningConfiguration:
+        Status: Enabled
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/Bucket_1/Resource
+  Bucket1PolicyB828F92E:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: Bucket14C3977AF
+      PolicyDocument:
+        Statement:
+          - Action: s3:*
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+            Effect: Deny
+            Principal:
+              AWS: "*"
+            Resource:
+              - Fn::GetAtt:
+                  - Bucket14C3977AF
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - Bucket14C3977AF
+                        - Arn
+                    - /*
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - Bucket14C3977AF
+                      - Arn
+                  - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/Bucket_1/Policy/Resource
+  Bucket244B56945:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/Bucket_2/Resource
+  Bucket2PolicyA8635811:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: Bucket244B56945
+      PolicyDocument:
+        Statement:
+          - Action: s3:*
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+            Effect: Deny
+            Principal:
+              AWS: "*"
+            Resource:
+              - Fn::GetAtt:
+                  - Bucket244B56945
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - Bucket244B56945
+                        - Arn
+                    - /*
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - Bucket244B56945
+                      - Arn
+                  - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/Bucket_2/Policy/Resource
+  indexphotosServiceRole1C8ACA20:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/index-photos/ServiceRole/Resource
+  indexphotos0BC6FFA4:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: 7834cac183e0668b7624a81a6e5edf2ba228a17283741e7b9569151e91b1a8ab.zip
+      FunctionName: LF1
+      Handler: LF1.handler
+      Role:
+        Fn::GetAtt:
+          - indexphotosServiceRole1C8ACA20
+          - Arn
+      Runtime: python3.12
+    DependsOn:
+      - indexphotosServiceRole1C8ACA20
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/index-photos/Resource
+      aws:asset:path: asset.7834cac183e0668b7624a81a6e5edf2ba228a17283741e7b9569151e91b1a8ab
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  searchphotosServiceRoleB8A9085E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/search-photos/ServiceRole/Resource
+  searchphotosAEA07FA2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: 7834cac183e0668b7624a81a6e5edf2ba228a17283741e7b9569151e91b1a8ab.zip
+      FunctionName: search-photos
+      Handler: LF2.handler
+      Role:
+        Fn::GetAtt:
+          - searchphotosServiceRoleB8A9085E
+          - Arn
+      Runtime: nodejs18.x
+    DependsOn:
+      - searchphotosServiceRoleB8A9085E
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/search-photos/Resource
+      aws:asset:path: asset.7834cac183e0668b7624a81a6e5edf2ba228a17283741e7b9569151e91b1a8ab
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  CloudOne86F1B68B:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Body:
+        swagger: "2.0"
+        info:
+          description: AI Photo Search application, built during the Cloud and Big Data course at Columbia University.
+          version: 1.0.0
+          title: AI Photo Search modified
+        schemes:
+          - https
+        paths:
+          /search:
+            get:
+              operationId: searchPhotos
+              produces:
+                - application/json
+              parameters:
+                - name: q
+                  in: query
+                  required: false
+                  type: string
+              responses:
+                "200":
+                  description: 200 response
+                  schema:
+                    $ref: "#/definitions/SearchResponse"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                "403":
+                  description: 403 response
+                  schema:
+                    $ref: "#/definitions/Error"
+                "500":
+                  description: 500 response
+                  schema:
+                    $ref: "#/definitions/Error"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                uri:
+                  Fn::Join:
+                    - ""
+                    - - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/
+                      - Fn::GetAtt:
+                          - searchphotosAEA07FA2
+                          - Arn
+                      - /invocations
+                responses:
+                  default:
+                    statusCode: "200"
+                requestParameters:
+                  integration.request.querystring.q: method.request.querystring.q
+                passthroughBehavior: when_no_match
+                contentHandling: CONVERT_TO_TEXT
+                type: aws_proxy
+            options:
+              consumes:
+                - application/json
+              responses:
+                "200":
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                passthroughBehavior: when_no_match
+                type: mock
+          "/upload/{object}":
+            put:
+              operationId: uploadPhoto
+              produces:
+                - application/json
+              parameters:
+                - name: object
+                  in: path
+                  required: true
+                  type: string
+                - name: x-amz-meta-customLabels
+                  in: header
+                  required: false
+                  type: string
+              responses:
+                "200":
+                  description: 200 response
+                  schema:
+                    $ref: "#/definitions/MODEL9809cc"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                "403":
+                  description: 403 response
+                  schema:
+                    $ref: "#/definitions/Error"
+                "500":
+                  description: 500 response
+                  schema:
+                    $ref: "#/definitions/Error"
+              security:
+                - api_key: []
+              x-amazon-apigateway-integration:
+                credentials: arn:aws:iam::058264377593:role/apigateway_role
+                httpMethod: PUT
+                uri:
+                  Fn::Join:
+                    - ""
+                    - - arn:aws:apigateway:us-east-1:s3:path/
+                      - Ref: Bucket244B56945
+                      - /{object}
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestParameters:
+                  integration.request.path.object: method.request.path.object
+                  integration.request.header.x-amz-meta-customLabels: method.request.header.x-amz-meta-customLabels
+                passthroughBehavior: when_no_templates
+                timeoutInMillis: 10000
+                type: aws
+            options:
+              consumes:
+                - application/json
+              parameters:
+                - name: object
+                  in: path
+                  required: true
+                  type: string
+              responses:
+                "200":
+                  description: 200 response
+                  headers:
+                    Access-Control-Expose-Headers:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Credentials:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Expose-Headers: "'*'"
+                      method.response.header.Access-Control-Allow-Credentials: "'true'"
+                      method.response.header.Access-Control-Allow-Methods: "'OPTIONS,PUT'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,x-amz-meta-customLabels,*'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                passthroughBehavior: when_no_match
+                type: mock
+        securityDefinitions:
+          api_key:
+            type: apiKey
+            name: x-api-key
+            in: header
+        definitions:
+          Error:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+          MODEL9809cc:
+            type: object
+          Photo:
+            type: object
+            properties:
+              url:
+                type: string
+              labels:
+                type: array
+                items:
+                  type: string
+          SearchResponse:
+            type: object
+            properties:
+              results:
+                type: array
+                items:
+                  $ref: "#/definitions/Photo"
+        x-amazon-apigateway-gateway-responses:
+          DEFAULT_5XX:
+            responseParameters:
+              gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              gatewayresponse.header.Access-Control-Expose-Headers: "'*'"
+              gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+              gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+              gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+          DEFAULT_4XX:
+            responseParameters:
+              gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              gatewayresponse.header.Access-Control-Expose-Headers: "'*'"
+              gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+              gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+              gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        x-amazon-apigateway-binary-media-types:
+          - /image/jpg
+          - image/jpg
+      Name: CloudOne
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/CloudOne/Resource
+  CloudOneDeployment345A36D257cc49fad761c68c863ff4b5dd23bb82:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: Automatically created by the RestApi construct
+      RestApiId:
+        Ref: CloudOne86F1B68B
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/CloudOne/Deployment/Resource
+  CloudOneDeploymentStageprodAC501BD9:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: CloudOneDeployment345A36D257cc49fad761c68c863ff4b5dd23bb82
+      RestApiId:
+        Ref: CloudOne86F1B68B
+      StageName: prod
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/CloudOne/DeploymentStage.prod/Resource
+  MyApiDeployment3EE4013557cc49fad761c68c863ff4b5dd23bb82:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: CloudOne86F1B68B
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/MyApiDeployment/Resource
+  MyApiStageD8B091ED:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: MyApiDeployment3EE4013557cc49fad761c68c863ff4b5dd23bb82
+      RestApiId:
+        Ref: CloudOne86F1B68B
+      StageName: dev
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/MyApiStage/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/01PSW7DMAx8S+4yWzuHnJMUvbZwHxAoMmswtiUhlBoYgv5eLe5ymgVDzLCDtjvA804+uFHD1Mx0hfDhpJpEsi6B9xBOXk3oxPlTb6zCu5lJrX/2pqs4ScYoZrlcBwnh1WvlyOgc/uFRkFwg9GbGbGeMgvcXyYyO4ZhBSEujdPiQa1plUfXI7mipHGw0ofF3hblRvKCdzbqgLnP/qfTSWHoKifH3TJSi7JIec+DNO+vd1lAjiZ+NHqjO1mZAuPHTV9fCAdrdjYmau9eOFoS+4jc3jPDdVwEAAA==
+    Metadata:
+      aws:cdk:path: Assignment1CdkStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Outputs:
+  CloudOneEndpointA60E4328:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: CloudOne86F1B68B
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CloudOneDeploymentStageprodAC501BD9
+          - /
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - il-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+
