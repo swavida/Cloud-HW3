@@ -7,7 +7,7 @@ function searchPhotos() {
 
     // Assuming 'apigClient' is from the AWS API Gateway-generated SDK
     const apigClient = apigClientFactory.newClient({
-        apiKey: 'heskfhI7P9ad9Ng2zdKsA7V8W3oajlKHaDZuazG9'
+        apiKey: 'api-key'
     });
     const params = {
         q: query // This is how you pass query parameters
